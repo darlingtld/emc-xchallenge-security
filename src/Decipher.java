@@ -14,17 +14,17 @@ public class Decipher {
         System.out.println("cipher text:");
         System.out.println(cipherText);
 
-        String sum = decipher.decrypt(cipherText);
+        Integer sum = decipher.decrypt(cipherText);
         System.out.println("ascii sum:");
         System.out.println(sum);
 
     }
 
-    public String decrypt(String cipher) {
+    public int decrypt(String cipher) {
         String password = guessDecryptionKey(cipher);
         if (password == null) {
             System.out.println("no key was found!!!");
-            return null;
+            return 0;
         }
         System.out.println("password");
         System.out.println(password);
@@ -35,14 +35,14 @@ public class Decipher {
         System.out.println("decrypted text:");
         System.out.println(string);
         Set<Character> characterSet = new HashSet<>();
-        StringBuffer stringBuffer = new StringBuffer();
+        int sum = 0;
         for (char c : string.toCharArray()) {
             if (!characterSet.contains(c)) {
                 characterSet.add(c);
-                stringBuffer.append(c);
+                sum += c;
             }
         }
-        return stringBuffer.toString();
+        return sum;
     }
 
     private byte[] translateToBytes(String text) {
@@ -58,7 +58,7 @@ public class Decipher {
         String[] inputArr = cipherText.split(",");
         long start = System.currentTimeMillis();
         char[] plain = "Natural".toCharArray();
-        String key = "";
+        String key;
         for (int index = 0; index + 6 < inputArr.length; ++index) {
             StringBuilder current = new StringBuilder();
             for (int indexOfPlain = 0; indexOfPlain < plain.length; ++indexOfPlain) {
@@ -74,7 +74,7 @@ public class Decipher {
         }
 
         System.out.println("Search all possible keys. spent " + (System.currentTimeMillis() - start) + " ms");
-        return key;
+        return null;
 
     }
 
