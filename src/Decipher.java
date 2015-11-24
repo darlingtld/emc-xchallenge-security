@@ -55,41 +55,26 @@ public class Decipher {
     }
 
     private String guessDecryptionKey(String cipherText) {
+        String[] inputArr = cipherText.split(",");
         long start = System.currentTimeMillis();
-        String[] arr = cipherText.split(",");
-        char[] input1 = "Nul".toCharArray();
-        char[] input2 = "ar".toCharArray();
-        char[] input3 = "ta".toCharArray();
-        for (int firstDigit = 0; firstDigit < 128; ++firstDigit) {
-            char[] output1 = new char[3];
-            for (int index1 = 0; index1 < input1.length; ++index1) {
-                output1[index1] = (char) (input1[index1] ^ firstDigit);
+        char[] plain = "Natural".toCharArray();
+        String key = "";
+        for (int index = 0; index + 6 < inputArr.length; ++index) {
+            StringBuilder current = new StringBuilder();
+            for (int indexOfPlain = 0; indexOfPlain < plain.length; ++indexOfPlain) {
+                char c = (char) (plain[indexOfPlain] ^ Integer.parseInt(inputArr[index + indexOfPlain]));
+                current.append(c);
             }
-            for (int n = 0; n + 6 < arr.length; ++n) {
-                if (output1[0] == Integer.parseInt(arr[n]) && output1[1] == Integer.parseInt(arr[n + 3]) && output1[2] == Integer.parseInt(arr[n + 6])) {
-                    for (int secondDigit = 0; secondDigit < 128; ++secondDigit) {
-                        char[] output2 = new char[2];
-                        for (int index2 = 0; index2 < input2.length; ++index2) {
-                            output2[index2] = (char) (input2[index2] ^ secondDigit);
-                        }
-                        if (output2[0] == Integer.parseInt(arr[n + 1]) && output2[1] == Integer.parseInt(arr[n + 4])) {
-                            for (int thirdDigit = 0; thirdDigit < 128; ++thirdDigit) {
-                                char[] output3 = new char[2];
-                                for (int index3 = 0; index3 < input3.length; ++index3) {
-                                    output3[index3] = (char) (input3[index3] ^ thirdDigit);
-                                }
-                                if (output3[0] == Integer.parseInt(arr[n + 2]) && output3[1] == Integer.parseInt(arr[n + 5])) {
-                                    System.out.println("Get key. spent " + (System.currentTimeMillis() - start) + " ms");
-                                    return new String(new char[]{(char) firstDigit, (char) secondDigit, (char) thirdDigit});
-                                }
-                            }
-                        }
-                    }
-                }
+            if (current.substring(0, 3).equals(current.substring(3, 6)) && current.charAt(0) == current.charAt(6)) {
+                int shift = 3 - (index) % 3;
+                key = current.substring(shift, shift + 3);
+                System.out.println("find key. spent " + (System.currentTimeMillis() - start) + " ms");
+                return key;
             }
         }
+
         System.out.println("Search all possible keys. spent " + (System.currentTimeMillis() - start) + " ms");
-        return null;
+        return key;
 
     }
 
